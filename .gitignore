@@ -13,6 +13,7 @@ dist/
 *.swp
 *.swo
 *~
+.specstory/
 
 # OS files
 .DS_Store
