@@ -1,98 +1,78 @@
-# Foundry VTT MCP Bridge
+# Foundry VTT MCP Bridge Module
 
-Connect Foundry VTT to Claude Desktop for AI-powered campaign management through the Model Context Protocol (MCP). It currently supports Dungeons and Dragons Fifth Edition and Pathfinder Second Edition. The majority of MCP tools are system agnostic but character creation and compendium tools are only able to work with D&D5e and PF2E.
+This is the **Foundry VTT module component** of the [Foundry VTT MCP Bridge](https://github.com/adambdooley/foundry-vtt-mcp) project by [Adam Dooley](https://github.com/adambdooley). This module runs inside Foundry VTT and communicates with the MCP server to enable AI-powered campaign management through Claude Desktop.
+
+> **Note**: This repository contains only the Foundry module. For the complete package including the MCP server, installers, and ComfyUI integration, see the [main repository](https://github.com/adambdooley/foundry-vtt-mcp).
+
+## Fork Enhancements
+
+This fork adds:
+- **Two-Stage RunPod Workflow**: Enhanced map generation using base model + upscale refinement for higher quality battlemaps
+- **Improved Prompts**: Better negative prompts and enhanced prompt templates for battlemap generation
+- **Configurable Workflow**: Toggle between single-stage (faster) and two-stage (higher quality) via Foundry settings
+- **RunPod Integration**: Direct support for RunPod serverless GPU endpoints
 
 ## Overview
 
-The Foundry MCP Bridge enables natural AI conversations with your Foundry VTT game data:
+The Foundry MCP Bridge module provides secure, GM-only access to your Foundry VTT game data for AI interactions:
 
-- **Quest Creation**: [Create quests from prompts that incorporate what exists in your world and journals](https://www.youtube.com/watch?v=NqyB_z2AKME)
+- **Quest Creation**: Create quests from prompts incorporating your world and journals
 - **Character Management**: Query character stats, abilities, and information
 - **Compendium Search**: Find items, spells, and creatures using natural language
-- **Content Creation**: Generate actors, NPCs, and quest journals from simple prompts
+- **Content Creation**: Generate actors, NPCs, and quest journals from prompts
 - **Scene Information**: Access current scene data and world details
 - **Dice Coordination**: Interactive roll requests with player targeting
 - **Campaign Management**: Multi-part quest and campaign tracking
-- **Map Generation**: Create maps from prompts and automatically upload them into scenes in Foundry VTT using the optional ComfyUI component
+- **Map Generation**: AI-powered battlemap creation with RunPod or local ComfyUI support
 
-This project was built with the assistance of Claude Code. If you like this project, consider [supporting it on Patreon](https://www.patreon.com/c/Adambdooley).
+**Supported Systems**: D&D 5e, Pathfinder 2e (core tools are system-agnostic)
+
+## Credits
+
+Original project by [Adam Dooley](https://github.com/adambdooley) - [Support on Patreon](https://www.patreon.com/c/Adambdooley)
+
+This project was built with the assistance of Claude Code.
 
 ## Installation
 
-### Prerequisites
+> **Important**: This module requires the [MCP server](https://github.com/adambdooley/foundry-vtt-mcp) to be installed and running. For the easiest installation experience, use the installers from the [main repository](https://github.com/adambdooley/foundry-vtt-mcp/releases).
 
-- **Foundry VTT v13**
-- **Claude Desktop** with MCP support
-- **Windows** (for automated installer) or **Node.js 18+** for manual installation
+### Option 1: Via Manifest URL (Recommended)
 
-### Option 1: Windows Installer
+1. Open Foundry VTT v13 or v14
+2. Navigate to **Add-on Modules** → **Install Module**
+3. Paste this manifest URL at the bottom:
+   ```
+   https://github.com/ctbritt/foundry-mcp-bridge/releases/latest/download/module.json
+   ```
+4. Click **Install**
+5. Enable "Foundry MCP Bridge" in your Module Management
 
-[Video guide for Windows Installer](https://youtu.be/Se04A21wrbE)
+### Option 2: Manual Installation from Source
 
-1. Download the latest `FoundryMCPServer-Setup-vx.x.x.exe` from [Releases](https://github.com/adambdooley/foundry-vtt-mcp/releases)
-2. Run the installer - it will:
-   - Install the MCP server with bundled Node.js runtime
-   - Configure the Claude Desktop MCP server settings
-   - Optionally install the Foundry module and ComfyUI Map Generation to your VTT installation
-   - Choose Cuda version for your GPU type during install
-3. Restart Claude Desktop
-4. Enable "Foundry MCP Bridge" in your Foundry Module Management
-
-### Option 2: Mac Installer
-1.  Download the latest `FoundryMCPServer-vx.x.x.dmg` from [Releases](https://github.com/adambdooley/foundry-vtt-mcp/releases)
-2. Run the package installer inside the dmg - it will:
-    - Open DMG and double-click the PKG installer
-    - Configure the Claude Desktop MCP server settings
-    - Optionally install the Foundry module and ComfyUI Map Generation to your Foundry VTT installation
-3. Restart Claude Desktop
-4. Enable "Foundry MCP Bridge" in your Foundry Module Management
-
-
-### Option 3: Manual Installation
-
-#### Install the Foundry Module
-1. Open Foundry VTT v13
-2. Select install module in the Foundry Add-ons menu
-2. At the bottom of the window, add the Manifest URL as: https://github.com/adambdooley/foundry-vtt-mcp/blob/master/packages/foundry-module/module.json and click install
-3. Enable "Foundry MCP Bridge" in Module Management
-
-#### Install the MCP Server
 ```bash
-# Clone repository
-git clone https://github.com/adambdooley/foundry-vtt-mcp.git
-cd foundry-vtt-mcp
+# Clone this repository
+git clone https://github.com/ctbritt/foundry-mcp-bridge.git
+cd foundry-mcp-bridge
 
 # Install dependencies and build
 npm install
 npm run build
 
+# Copy to your Foundry modules directory
+# Linux/Mac:
+cp -r . ~/foundryuserdata/Data/modules/foundry-mcp-bridge/
+
+# Windows:
+# Copy the entire directory to %localappdata%\FoundryVTT\Data\modules\foundry-mcp-bridge\
 ```
-
-#### Configure Claude Desktop
-Add this to your Claude Desktop configuration (claude_desktop_config.json) file:
-
-```json
-{
-  "mcpServers": {
-    "foundry-mcp": {
-      "command": "node",
-      "args": ["path/to/foundry-vtt-mcp/packages/mcp-server/dist/index.js"],
-      "env": {
-        "FOUNDRY_HOST": "localhost",
-        "FOUNDRY_PORT": "31415"
-      }
-    }
-  }
-}
-```
-
-Starting Claude Desktop will start the MCP Server.
 
 ### Getting Started
 
-1. Start Foundry VTT and load your world
-3. Open Claude Desktop
-4. Chat with Claude about your currently loaded Foundry World
+1. Install and configure the [MCP server](https://github.com/adambdooley/foundry-vtt-mcp) (see main repo for instructions)
+2. Start Foundry VTT and enable this module
+3. Open Claude Desktop (which should start the MCP server automatically)
+4. Chat with Claude about your currently loaded Foundry world!
 
 ## Example Usage
 
@@ -105,83 +85,123 @@ Once connected, ask Claude Desktop:
 - *"What's in the current Foundry scene?"*
 - *"Create me a small map of a Riverside Cottage in Foundry"*
 
-## Features
+## Module Features
 
-- **25 MCP Tools** that allow Claude to interact with Foundry
-- **Character Management**: Access stats, abilities, and inventory
-- **Enhanced Compendium Search**: Instant filtering by CR, type, abilities, and more
-- **Content Creation**: Generate actors, NPCs, and quest journals
-- **Campaign Management**: Multi-part quest tracking with progress dashboards
-- **Interactive Dice System**: Send different dice roll requests to players from Claude
-- **Actor Ownership**: Manage player permissions for characters and tokens
-- **GM-Only**: MCP Bridge only connects to Game Master users
-- **Map Generation**: A portable ComfyUI backend that generates battlemaps from prompts
-- **Remote Connections**: WebRTC connections initiated through browser (Tested with Google Chrome) to MCP server and ComfyUI
-- **Windows and Mac Installers** Automated installation of Foundry MCP Server for Claude Dekstop, Foundry MCP Bridge Foundry VTT Module, and ComfyUI backend with dependencies
+This module provides the Foundry VTT side of the bridge:
 
-## Settings
+- **Secure Data Access**: GM-only query handlers for all MCP tools
+- **Character Management**: Expose character stats, abilities, and inventory to AI
+- **Enhanced Compendium Search**: Pre-computed creature index for instant filtering
+- **Content Creation**: Support for AI-generated actors, NPCs, and quest journals
+- **Campaign Tracking**: Dashboard generation and quest progress monitoring
+- **Interactive Dice System**: Process roll requests and coordinate with players
+- **Actor Ownership**: Permission management for AI-created content
+- **Map Generation**:
+  - RunPod serverless GPU integration
+  - Two-stage workflow (base + upscale) for higher quality
+  - Local ComfyUI support via MCP server
+- **Connection Types**:
+  - WebSocket for local networks
+  - WebRTC for remote/HTTPS connections
+- **GM-Only Security**: All MCP operations require Game Master privileges
 
-<img width="964" height="803" alt="image" src="https://github.com/user-attachments/assets/bfd435d5-2df4-40a6-a79b-87e98121db3f" />
+## Two-Stage Map Generation Workflow
 
-- **Enhanced Creature Index** Configure Enhanced Index button leads to Enhanced Creature Index sub-menu (Details below)
-- **Map Generation Service Configuration** Configure Map Generation button leads to Map Generation Service sub-menu (Details below)
-- **Enable MCP Bridge** This should be checked by default and the status should show as connected. It can be used to turn off the MCP Bridge connection within the game without the need to disable the add-on itself.
-- **Connection Type** Can be set to Auto for automatic detection of connection type. Can also be set to force either WebRTC for Internet connections or Websocket for Local connections.
-- **Websocket Server Host** IP Address of Claude Desktop MCP Server location. Only used for local network websocket connections. Remote Servers use WebRT. Defaults to localhost.
-- **Allow Write Operations** This will prevent Claude from making any changes to world content and restrict it to reading only
-- **Max Actors Per Request** This is a failsafe to stop a massive amount of actors being created from one single request. It does not limit the amount of characters being created by multiple requests
-- **Show Connection Messages** This can turn off the banner messages for connections for Foundry MCP Bridge
-- **Auto-Reconnect on Disconnect** Will automatically attempt to reconnect if the connection is lost
-- **Connection Check Frequency** How often it will check connection status
+This fork includes an enhanced two-stage workflow for RunPod map generation:
 
-### Enhanced Creature Index Sub-menu
+### How It Works
 
-<img width="497" height="604" alt="image" src="https://github.com/user-attachments/assets/bf1a6fdb-9bd5-4256-b922-d28cf65b1e7d" />
+1. **Stage 1 - Base Generation**: Creates image at lower resolution using `dDBattlemapsSDXL10_v10.safetensors`
+2. **Stage 2 - Upscale & Refine**: Upscales 2x and refines details using `dDBattlemapsSDXL10_upscaleV10.safetensors`
 
-- **Rebuild Creature Index** This button will rebuild the creature index if there is an issue or it is out of sync with changes in your compendiums
-- **Enable Enhanced Creature Index** This should be left on as Claude builds additional metadata in the world files to give it better searches
-- **Auto-Rebuild Index on Pack Changes** Experimental feature that hasn't been fully tested yet
+### Configuration
 
-### Map Generation Service Sub-menu
+Enable via Foundry module settings:
+- **Use Two-Stage Workflow (RunPod)**: Toggle between single-stage (faster) and two-stage (higher quality)
+- **Generation Quality**:
+  - Low: 10-15 steps (fast, good for testing)
+  - Medium: 20-25 steps (balanced)
+  - High: 45-50 steps (best quality, slower)
 
-<img width="489" height="779" alt="image" src="https://github.com/user-attachments/assets/a43d3a3d-266f-41c9-b40a-236d14cfcba9" />
+### Requirements
 
-- **Service Status** There are three buttons for Check Status, Start Service, and Stop Service. These buttons help monitor and control the connection from the Foundry MCP Bridge to the ComfyUI backend which is started by the Claude Desktop application.
-- **Auto-start Map Generation Service** Controls whether ComfyUI service connection is automatically connected at startup of the Foundry world.
-- **Generation Quality** Controls the quality of the maps generated by the SDXL checkpoints wiht ComfyUI. Low uses 8 steps of generation, Medium uses 20 steps of generation, and High uses 35 steps. The D&D Battlemaps SDXL Upscale v1.0 Checkpoint used in this image generation recommends using 35 steps but on low end GPUs or GPUs with out CUDA, this generation will take several minutes. These options can give you a trade off to have maps generated faster at the expense of quality.
+For two-stage workflow on RunPod, you need both models:
+- `dDBattlemapsSDXL10_v10.safetensors` (base model)
+- `dDBattlemapsSDXL10_upscaleV10.safetensors` (upscale model)
+- `sdxl_vae.safetensors` (VAE)
+
+### Performance
+
+- **Single-stage**: 30-90 seconds, generates directly at target resolution
+- **Two-stage**: 60-180 seconds, better quality through base+upscale approach
+
+## Key Settings
+
+The module includes several configuration options:
+
+- **Connection Settings**: Auto-detect or force WebSocket/WebRTC
+- **Security**: Enable/disable write operations, max actors per request
+- **Enhanced Creature Index**: Pre-computed metadata for instant creature filtering
+- **Map Generation**: Service type (local/RunPod), quality, workflow type
+- **Auto-reconnect**: Automatic reconnection on disconnect
+
+For detailed settings information, see the module's configuration menus in Foundry VTT.
 
 ## Architecture
 
+This module is one component of the larger MCP Bridge system:
+
 ```
-Claude Desktop ↔ MCP Protocol ↔ MCP Server ↔ WebSocket ↔ Foundry Module ↔ Foundry VTT
-                                     ↓
-                              ComfyUI Service
-                              (AI Map Generation)
+Claude Desktop
+      ↓
+  MCP Protocol
+      ↓
+  MCP Server (Node.js) ←→ ComfyUI/RunPod
+      ↓
+  WebSocket/WebRTC
+      ↓
+  [This Module] ← Running inside Foundry VTT
+      ↓
+  Foundry VTT Game Data
 ```
 
-- **Foundry Module**: Provides secure data access within Foundry VTT
-- **MCP Server**: External Node.js server handling Claude Desktop communication
-- **Map Generation Service**: A headless ComfyUI backend that is spawned by Claude Desktop
-- **No API Keys Required**: Uses your existing Claude Desktop subscription
+**This Module's Role**:
+- Receives MCP queries via WebSocket/WebRTC from the MCP server
+- Processes queries using Foundry's game data APIs
+- Returns results to the MCP server for Claude Desktop
+- Manages map generation requests to RunPod or local ComfyUI
+- Enforces GM-only security at the Foundry level
 
 ## Security & Permissions
 
-- **GM-Only Access**: All functionality restricted to Game Master users
-- **Configurable Permissions**: Control what data Claude can access and modify
-- **Session-Based Authentication**: Uses Foundry's built-in authentication system
+- **GM-Only Access**: All MCP operations restricted to Game Master users
+- **Configurable Permissions**: Optional read-only mode to prevent modifications
+- **Rate Limiting**: Max actors per request to prevent abuse
+- **No External APIs**: Works with your existing Claude Desktop subscription
 
 ## System Requirements
 
-- **Foundry VTT**: Version 13
-- **Claude Desktop**: Latest version with MCP support
-- **Claude Pro/Max Plan**: Required to connect to MCP servers
-- **Operating System**: Windows 10/11 (installer), or other OSes/manual Windows install with Node.js 18+ (manual)
-- **GPU Requirements**: A GPU with at least 8GB of VRAM
+- **Foundry VTT**: Version 13 or 14
+- **MCP Server**: Installed and configured (see [main repository](https://github.com/adambdooley/foundry-vtt-mcp))
+- **For Map Generation**:
+  - RunPod account with serverless endpoint, OR
+  - Local ComfyUI installation with 8GB+ VRAM GPU
 
-## Support & Development
+## Development
 
-- **Issues**: Report bugs on [GitHub Issues](https://github.com/adambdooley/foundry-vtt-mcp/issues)
-- **YouTube Channel**: [Subscribe for updates and tutorials](https://www.youtube.com/channel/UCVrSC-FzuAk5AgvfboJj0WA)
-- **Support Development**: [Support on Patreon](https://www.patreon.com/c/Adambdooley)
-- **Documentation**: Built with TypeScript, comprehensive documentation included
-- **License**: MIT License (Additional Third Party licenses are included for bundled components for the installers)
+This is a TypeScript project. To build from source:
+
+```bash
+npm install
+npm run build      # Compile TypeScript
+npm run dev        # Watch mode for development
+npm run typecheck  # Type check without building
+```
+
+## Support & Links
+
+- **Original Project**: [Foundry VTT MCP Bridge](https://github.com/adambdooley/foundry-vtt-mcp) by Adam Dooley
+- **Support Adam**: [Patreon](https://www.patreon.com/c/Adambdooley)
+- **YouTube**: [Tutorials and updates](https://www.youtube.com/channel/UCVrSC-FzuAk5AgvfboJj0WA)
+- **Fork Issues**: [GitHub Issues](https://github.com/ctbritt/foundry-mcp-bridge/issues)
+- **License**: MIT License (see LICENSE file)
