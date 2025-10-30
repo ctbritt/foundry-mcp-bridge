@@ -9,3 +9,14 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+
+  # npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Ignore foundry-vtt-types - deliberately kept at v9 to avoid breaking changes
+    # Upgrading to v13 causes 24+ TypeScript errors. See commit 66dbe71 and .npmrc.
+    ignore:
+      - dependency-name: "@league-of-foundry-developers/foundry-vtt-types"
+        update-types: ["version-update:semver-major"]
