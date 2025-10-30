@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^9.280.1",
-    "@types/node": "^20.0.0",
+    "@types/node": "^24.9.2",
     "typescript": "^5.0.0"
   },
   "files": [
