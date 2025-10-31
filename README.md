@@ -4,6 +4,22 @@ This is the **Foundry VTT module component** of the [Foundry VTT MCP Bridge](htt
 
 > **Note**: This repository contains only the Foundry module. For the complete package including the MCP server, installers, and ComfyUI integration, see the [main repository](https://github.com/adambdooley/foundry-vtt-mcp).
 
+## Why this module?
+
+Because I have a slow Mac at home and the local ComfyUI was taking too long to generate maps. So I set up my own RunPod serverless instance, downloaded the Safe Tensor models and other files from [civit.ai](https://civit.ai), and vibe-coded the addition of [RunPod](https://runpod.io). So far, it's working really well for me. 
+
+The files you'll need for the whole two-stage process are: 
+- [dDBattlemapsSDXL10_v10.safetensors](https://civitai.com/api/download/models/1204482?type=Model&format=SafeTensor&size=full&fp=bf16)
+- [dDBattlemapsSDXL10_v10.yaml](https://civitai.com/api/download/models/1204482?type=Config)
+- [dDBattlemapsSDXL10_upscaleV10.safetensors](https://civitai.com/api/download/models/1521765?type=Model&format=SafeTensor&size=full&fp=bf16) (optional, but they look nicer.)
+- [dDBattlemapsSDXL10_upscaleV10.yaml](https://civitai.com/api/download/models/1521765?type=Config)
+
+On your RunPod setup, create a network volume of 30GB or so and upload the files to /workspace with the following structure:
+```
+/workspace/
+   checkpoints/ < safetensor files go here
+   configs/ < config files go here
+```
 ## Fork Enhancements
 
 This fork adds:
