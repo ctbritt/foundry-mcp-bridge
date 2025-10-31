@@ -20,6 +20,8 @@ On your RunPod setup, create a network volume of 30GB or so and upload the files
    checkpoints/ < safetensor files go here
    configs/ < config files go here
 ```
+For more detailed instructions, see the [RunPod how-to](url).
+
 ## Fork Enhancements
 
 This fork adds:
